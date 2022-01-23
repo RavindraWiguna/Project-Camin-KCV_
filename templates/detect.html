@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="stylesheet" type="text/css" href="/static/style.css">
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Face Mask Detection</title>
+</head>
+<body>
+    <div id="banner">
+        <div id="project-name">
+            <p>Face Mask Detection</p>
+        </div>
+        <div id="team-name">
+            <p>from Tim5TapiBertiga</p>
+        </div>
+        <div id="mask-img">
+            <img src="{{ url_for('video') }}" id="camera-input">
+        </div>
+    </div>
+    <div id="util">
+        <button id="stop-cam">STOP CAMERA</button>
+        <form action="#" method="post">
+            <input type="submit" name="changeCam" value="CHANGE CAMERA">
+        </form>
+    </div>
+    <script src="/static/script.js"></script>
+</body>
+</html>
