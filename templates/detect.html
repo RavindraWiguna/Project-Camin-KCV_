@@ -1,11 +1,12 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <link rel="stylesheet" type="text/css" href="/static/style.css">
     <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <link rel="stylesheet" type="text/css" href="/static/style.css">
+    <!-- <meta http-equiv="X-UA-Compatible" content="IE=edge"> -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Face Mask Detection</title>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/1.4.8/socket.io.min.js"></script>
 </head>
 <body>
     <div id="banner">
@@ -16,7 +17,10 @@
             <p>from Tim5TapiBertiga</p>
         </div>
         <div id="mask-img">
-            <img src="{{ url_for('video') }}" id="camera-input">
+            <!-- Video From Camera using JS -->
+            <video id="videoElement" autoplay="true" playsinline></video>
+            <!-- For Processes Camera Input -->
+            <img id="camera-output" alt="">
         </div>
     </div>
     <div id="util">

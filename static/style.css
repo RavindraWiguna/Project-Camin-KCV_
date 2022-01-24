@@ -95,8 +95,11 @@ input::after{
     width: 100%;
 }
 
-#camera-input{
-    width: 50%;
+#camera-output{
+    width: 72vh;
+    height: 56vh;
+    /* transform: scaleX(-1); */
+    border: 1px solid black;
 }
 
 #stop-cam{
