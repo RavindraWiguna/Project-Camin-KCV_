@@ -20,23 +20,6 @@
         ctx.drawImage(video, 0, 0, w, h);
     return canvas;
 }     
- 
-// /**
-//  * Invokes the <code>capture</code> function and attaches the canvas element to the DOM.
-//  */
-// function shoot(){
-//     var video  = document.getElementById(videoId);
-//     var output = document.getElementById('output');
-//     var canvas = capture(video, scaleFactor);
-//         canvas.onclick = function(){
-//             window.open(this.toDataURL());
-//         };
-//     snapshots.unshift(canvas);
-//     output.innerHTML = '';
-//     for(var i=0; i<4; i++){
-//         output.appendChild(snapshots[i]);
-//     }
-// }
 
 //===========================MAIN FUNC=======================
 //make a socket object
@@ -97,13 +80,13 @@ function cameraStart() {
 //if exist video, then gas
 if(!!video_element){
     video_element.style.display = "none";
-    const FPS = 24;
+    const FPS = 20;
     const type = "image/webp";
 
     cameraStart();
     //ready to process
     setInterval(function(){
-        let frame = capture(video_element, 1);
+        let frame = capture(video_element, 0.625);
         let data = frame.toDataURL(type);
         data = data.replace('data:image/webp;base64,', '');
         socket.emit('image', data);
