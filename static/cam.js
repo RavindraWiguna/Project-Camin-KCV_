@@ -1,21 +1,3 @@
-//Camera Triggers Util
-const stopCamButton = document.getElementById("stop-cam");
-if(!!stopCamButton){
-    stopCamButton.addEventListener('click', function(){
-        // alert("going to '' ");
-        location.href = "/";
-        
-    })
-}
-
-const startCamButton = document.getElementById("start-cam");
-if(!!startCamButton){
-    startCamButton.addEventListener('click', function(){
-        // alert("starting camera");
-        location.href = "/detect";
-    })
-}
-
 //Video Function
 /**
  * Captures a image frame from the provided video element.
@@ -58,21 +40,52 @@ if(!!startCamButton){
 
 //===========================MAIN FUNC=======================
 //make a socket object
-var socket = io('http://127.0.0.1:5000');
+var socket = io();
 socket.on('connect', function(){
     console.log("Connected...!", socket.connected)
 });
 
-//get video element
+//get video, image, and camera button element
 const video_element = document.querySelector("#videoElement");
 const image_id = document.querySelector('#camera-output');
+const startCamBtn = document.querySelector("#start-cam");
+const stopCamBtn = document.querySelector("#stop-cam");
+const changeCamBtn = document.querySelector("#change-cam");
 
 // Set constraints for the video stream
-var constraints = { video: { facingMode: "user" }, audio: false };
+const constraints0 = { video: { facingMode: "user" }, audio: false };
+const constraints1 = { video: { facingMode: "environment" }, audio: false };
+const configList = [constraints0, constraints1];
+var idConfig = 0;
+
+//Camera Triggers Util
+if(!!stopCamBtn){
+    stopCamBtn.addEventListener('click', function(){
+        // alert("going to '' ");
+        location.href = "/";
+        
+    });
+}
+
+if(!!startCamBtn){
+    startCamBtn.addEventListener('click', function(){
+        // alert("starting camera");
+        location.href = "/detect";
+    });
+}
+
+if(!!changeCamBtn){
+    changeCamBtn.addEventListener('click', function(){
+        idConfig++;
+        idConfig %= 2;
+        cameraStart();
+    });
+}
+
 // Access the device camera and stream to cameraView
 function cameraStart() {
     navigator.mediaDevices
-        .getUserMedia(constraints)
+        .getUserMedia(configList[idConfig])
         .then(function(stream) {
         // track = stream.getTracks()[0];
         video_element.srcObject = stream;
@@ -81,16 +94,18 @@ function cameraStart() {
         console.error("Oops. Something is broken.", error);
     });
 }
+//if exist video, then gas
 if(!!video_element){
     video_element.style.display = "none";
-    cameraStart();
-    const FPS = 20;
+    const FPS = 24;
     const type = "image/webp";
+
+    cameraStart();
     //ready to process
     setInterval(function(){
-        let frame = capture(video_element, 0.5);
+        let frame = capture(video_element, 1);
         let data = frame.toDataURL(type);
-        data = data.replace('data:' + type + ';base64,', '');
+        data = data.replace('data:image/webp;base64,', '');
         socket.emit('image', data);
     }, 1000/FPS);
 

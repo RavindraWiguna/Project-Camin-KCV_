@@ -1,14 +1,13 @@
-import base64
 from io import StringIO, BytesIO
-from flask import Flask, render_template, request, Response
+from flask import Flask, render_template
 from flask_socketio import SocketIO, emit
-import cv2
-from PIL import Image, UnidentifiedImageError
+from PIL import Image
 import numpy as np
+import cv2
+import base64
 
 app = Flask(__name__)
-socket_io = SocketIO(app)   
-b64_src = 'data:image/jpg;base64,'
+socket_io = SocketIO(app)
 #LOGIC AND OPEN CV FUNC
 # listCam = []
 # didCheck = False
@@ -85,10 +84,11 @@ def image(data_image):
     # frame = cv2.flip(frame, 1)
     imgencode = cv2.imencode('.jpg', frame)[1]
     stringData = base64.b64encode(imgencode).decode('utf-8')
-    emit('response_back', f'{b64_src}{stringData}')
+    emit('response_back', f'data:image/jpg;base64,{stringData}')
     
 
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    # socket_io.run(app)
+    app.run()
 
