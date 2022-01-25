@@ -62,6 +62,20 @@ if(!!changeCamBtn){
         idConfig++;
         idConfig %= 2;
         cameraStart();
+        var x = 6;
+        var interval = 500;
+    
+        for (var i = 0; i < x; i++) {
+            setTimeout(function () {
+                // Do Something
+                    //pertama
+            let frame = capture(video_element, 0.625);
+            let data = frame.toDataURL(type);
+            data = data.replace('data:image/webp;base64,', '');
+            socket.emit('image', data);
+            }, i * interval)
+        }
+    
     });
 }
 
@@ -80,20 +94,37 @@ function cameraStart() {
 //if exist video, then gas
 if(!!video_element){
     video_element.style.display = "none";
-    const FPS = 20;
+    const FPS = 5;
     const type = "image/webp";
 
     cameraStart();
-    //ready to process
-    setInterval(function(){
+
+    var x = 6;
+    var interval = 500;
+
+    for (var i = 0; i < x; i++) {
+        setTimeout(function () {
+            // Do Something
+                //pertama
         let frame = capture(video_element, 0.625);
         let data = frame.toDataURL(type);
         data = data.replace('data:image/webp;base64,', '');
         socket.emit('image', data);
-    }, 1000/FPS);
+        }, i * interval)
+    }
+
+    //ready to process
+    // setInterval(function(){
+
+    // }, 1000/FPS);
+    // Set a function to run every "interval" seconds a total of "x" times
 
     socket.on('response_back', function(image){        
         image_id.src = image;
+        let frame = capture(video_element, 0.5);
+        let data = frame.toDataURL(type);
+        data = data.replace('data:image/webp;base64,', '');
+        socket.emit('image', data);        
     });
 }
 
