@@ -62,19 +62,8 @@ if(!!changeCamBtn){
         idConfig++;
         idConfig %= 2;
         cameraStart();
-        var x = 6;
-        var interval = 500;
-    
-        for (var i = 0; i < x; i++) {
-            setTimeout(function () {
-                // Do Something
-                    //pertama
-            let frame = capture(video_element, 0.625);
-            let data = frame.toDataURL(type);
-            data = data.replace('data:image/webp;base64,', '');
-            socket.emit('image', data);
-            }, i * interval)
-        }
+
+        shootFirstFrameHandler();
     
     });
 }
@@ -91,27 +80,39 @@ function cameraStart() {
         console.error("Oops. Something is broken.", error);
     });
 }
+
+function shootFirstFrameHandler(){
+    let x = 12;
+    let interval = 500;
+    let isNotStart = true;
+    let type = "image/webp";
+    for (var i = 0; i < x && isNotStart; i++) {
+        setTimeout(function () {
+        let frame = capture(video_element, 0.625);
+        let data = frame.toDataURL(type);
+        data = data.replace('data:image/webp;base64,', '');
+        if(!(data.includes("data"))){
+            socket.emit('image', data);
+            isNotStart=false;//break out of the loop
+            console.log("not null");
+            // console.log(data);
+            // alert(data);
+        }else{
+            console.log("data null");
+        }
+        }, i * interval)
+    }
+}
+
 //if exist video, then gas
 if(!!video_element){
     video_element.style.display = "none";
-    const FPS = 5;
+    // const FPS = 5;
     const type = "image/webp";
 
     cameraStart();
 
-    var x = 6;
-    var interval = 500;
-
-    for (var i = 0; i < x; i++) {
-        setTimeout(function () {
-            // Do Something
-                //pertama
-        let frame = capture(video_element, 0.625);
-        let data = frame.toDataURL(type);
-        data = data.replace('data:image/webp;base64,', '');
-        socket.emit('image', data);
-        }, i * interval)
-    }
+    shootFirstFrameHandler();
 
     //ready to process
     // setInterval(function(){
