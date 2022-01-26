@@ -40,7 +40,7 @@ def image(data_image):
 
     #do python ml stuff to frame here
     gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
-    faces = face_cascade.detectMultiScale(gray, 1.05, 5) #src, scale factor (multipiter to be pyramid (shrink)), minNeighbohr (rectangle overlap for AC)
+    faces = face_cascade.detectMultiScale(gray, 1.1, 6) #src, scale factor (multipiter to be pyramid (shrink)), minNeighbohr (rectangle overlap for AC)
     
     #mtcnn ver
     # mtFaces = mtcnnDetector.detect_faces(frame)
@@ -48,6 +48,10 @@ def image(data_image):
     for (x, y, w, h) in faces:
         # cv2.rectangle(frame, (x, y), (x+w, y+h), (255, 0, 0), 2)
         # faceBox = frame[x:x+w, y:y+h]
+        y-=5
+        x-=5
+        w+=10
+        h+=10
         faceBox = frame[y:y+h, x:x+w]
         # faceHSV = cv2.cvtColor(faceBox, cv2.COLOR_BGR2HSV)
         # faceHSV[:, :, 2] += 50
@@ -55,17 +59,28 @@ def image(data_image):
         # frame = faceBox
         # cv2.imshow('work', faceBox)
         # faceBox = cv2.cvtColor(faceHSV, cv2.COLOR_HSV2BGR)
-        faceBox = cv2.resize(faceBox, (128, 128))
+        try:
+            faceBox = cv2.resize(faceBox, (128, 128))
+        except cv2.error:
+            y+=5
+            x+=5
+            w-=10
+            h-=10
+            faceBox = frame[y:y+h, x:x+w]
+            faceBox = cv2.resize(faceBox, (128, 128))
+        
         faceBox = faceBox.reshape((1, 128, 128, 3))
         faceBox = faceBox.astype('float32')
         faceBox /=255
         pred = model.predict(faceBox)[0]
-        # pred = np.argmax(pred)
-        if(pred[1] > 0.09):
-            pred = 1
-        else:
-            pred = 0
+        pred = np.argmax(pred)
+        # if(pred[1] > 0.09):
+        #     pred = 1
+        # else:
+        #     pred = 0
+        # pred = pred[1] > 
         cv2.rectangle(frame, (x, y), (x+w, y+h), color[pred], 2)
+        # cv2.circle(frame, (x, y), 2, (255, 0, 0), -1)
         # print(f'{pred[0]} vs {pred[1]}')
 
     # for face in mtFaces:

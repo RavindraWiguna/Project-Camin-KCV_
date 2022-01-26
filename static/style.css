@@ -90,8 +90,14 @@ input::after{
 #camera-output{
     width: 72vh;
     height: 56vh;
-    /* transform: scaleX(-1); */
+    transform: scaleX(-1);
     border: 1px solid black;
+}
+
+#fps-counter{
+    display: flex;
+    justify-content: center;
+    flex-direction: row;
 }
 
 #stop-cam{

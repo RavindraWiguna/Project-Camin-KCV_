@@ -31,6 +31,7 @@ socket.on('connect', function(){
 //get video, image, and camera button element
 const video_element = document.querySelector("#videoElement");
 const image_id = document.querySelector('#camera-output');
+const fpsValue = document.querySelector("#fps-value");
 const startCamBtn = document.querySelector("#start-cam");
 const stopCamBtn = document.querySelector("#stop-cam");
 const changeCamBtn = document.querySelector("#change-cam");
@@ -89,43 +90,53 @@ function shootFirstFrameHandler(){
     for (var i = 0; i < x && isNotStart; i++) {
         setTimeout(function () {
         let frame = capture(video_element, 0.625);
-        let data = frame.toDataURL(type);
+        let data = frame.toDataURL(type, 'utf-8');
         data = data.replace('data:image/webp;base64,', '');
         if(!(data.includes("data"))){
             socket.emit('image', data);
             isNotStart=false;//break out of the loop
-            console.log("not null");
-            // console.log(data);
-            // alert(data);
-        }else{
-            console.log("data null");
         }
         }, i * interval)
     }
+    //rehat for 3 second
+    setTimeout(function(){},3000);
 }
 
 //if exist video, then gas
 if(!!video_element){
     video_element.style.display = "none";
-    // const FPS = 5;
+    const FPS = 16;
     const type = "image/webp";
 
     cameraStart();
 
     shootFirstFrameHandler();
-
+    let startTime = performance.now();
+    let totalFrame = 0;
+    let endTime = performance.now();
+    let delta = 1;
     //ready to process
-    // setInterval(function(){
-
-    // }, 1000/FPS);
-    // Set a function to run every "interval" seconds a total of "x" times
-
-    socket.on('response_back', function(image){        
-        image_id.src = image;
-        let frame = capture(video_element, 0.5);
-        let data = frame.toDataURL(type);
+    setInterval(function(){
+        endTime = performance.now();
+        totalFrame++;
+        delta = endTime-startTime;
+        if(delta > 999){
+            //sudah > 1 detik
+            let theFPS = Math.floor(totalFrame*1000/delta);
+            fpsValue.textContent = `${theFPS}`;
+            startTime = performance.now();
+            totalFrame=0;
+            // alert(delta);
+        }
+        let frame = capture(video_element, 0.625);
+        let data = frame.toDataURL(type, 'utf-8');
         data = data.replace('data:image/webp;base64,', '');
-        socket.emit('image', data);        
+        socket.emit('image', data);
+    }, 1000/FPS);
+    
+    socket.on('response_back', function(image){
+        image_id.src = image;
+
     });
 }
 
