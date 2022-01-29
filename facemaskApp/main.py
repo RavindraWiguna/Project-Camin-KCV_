@@ -6,7 +6,6 @@ import numpy as np
 import cv2
 import base64
 from tensorflow import keras
-from mtcnn import MTCNN
 
 app = Flask(__name__)
 socket_io = SocketIO(app)
@@ -14,7 +13,7 @@ socket_io = SocketIO(app)
 #LOGIC AND OPEN CV FUNC
 #load face cascade classifier
 face_cascade = cv2.CascadeClassifier(cv2.data.haarcascades + 'haarcascade_frontalface_default.xml')
-model = keras.models.load_model('./model/')
+model = keras.models.load_model('./facemaskApp/model/')
 color = ((0, 255, 0), (0, 0, 255))
 results = ('With Mask', 'Without Mask')
 font = cv2.FONT_HERSHEY_SIMPLEX
@@ -97,9 +96,4 @@ def image(data_image):
     stringData = base64.b64encode(imgencode).decode('utf-8')
     emit('response_back', f'data:image/jpg;base64,{stringData}')
     
-
-
-if __name__ == "__main__":
-    # socket_io.run(app)
-    app.run()
 
