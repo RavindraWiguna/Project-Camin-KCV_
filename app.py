@@ -16,6 +16,8 @@ socket_io = SocketIO(app)
 face_cascade = cv2.CascadeClassifier(cv2.data.haarcascades + 'haarcascade_frontalface_default.xml')
 model = keras.models.load_model('./model/')
 color = ((0, 255, 0), (0, 0, 255))
+results = ('With Mask', 'Without Mask')
+font = cv2.FONT_HERSHEY_SIMPLEX
 # [1, 0] --> pake masker
 # face_cascade = cv2.CascadeClassifier('haarcascade_frontalface_alt.xml')
 # mtcnnDetector = MTCNN()
@@ -37,7 +39,6 @@ def image(data_image):
     pimg = Image.open(b)
     
     frame = cv2.cvtColor(np.array(pimg), cv2.COLOR_RGB2BGR)
-
     #do python ml stuff to frame here
     gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
     faces = face_cascade.detectMultiScale(gray, 1.1, 6) #src, scale factor (multipiter to be pyramid (shrink)), minNeighbohr (rectangle overlap for AC)
@@ -73,13 +74,14 @@ def image(data_image):
         faceBox = faceBox.astype('float32')
         faceBox /=255
         pred = model.predict(faceBox)[0]
-        pred = np.argmax(pred)
+        res = np.argmax(pred)
         # if(pred[1] > 0.09):
         #     pred = 1
         # else:
         #     pred = 0
         # pred = pred[1] > 
-        cv2.rectangle(frame, (x, y), (x+w, y+h), color[pred], 2)
+        cv2.rectangle(frame, (x, y), (x+w, y+h), color[res], 2)
+        cv2.putText(frame, results[res], (x, y), font, 0.75, color[res], 2, cv2.LINE_AA)
         # cv2.circle(frame, (x, y), 2, (255, 0, 0), -1)
         # print(f'{pred[0]} vs {pred[1]}')
 

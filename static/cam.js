@@ -93,19 +93,20 @@ function shootFirstFrameHandler(){
         let data = frame.toDataURL(type, 'utf-8');
         data = data.replace('data:image/webp;base64,', '');
         if(!(data.includes("data"))){
+            console.log("done first frame shot");
             socket.emit('image', data);
             isNotStart=false;//break out of the loop
         }
         }, i * interval)
     }
-    //rehat for 3 second
-    setTimeout(function(){},3000);
+    //rehat for 2 second
+    setTimeout(function(){},2000);
 }
 
 //if exist video, then gas
 if(!!video_element){
     video_element.style.display = "none";
-    const FPS = 16;
+    const FPS = 12;
     const type = "image/webp";
 
     cameraStart();
